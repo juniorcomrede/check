@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Liquidity Sniper Checklist</title>
+  <style>
+    body {
+      background-color: #0d0d0d;
+      color: #f2f2f2;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      margin: 0;
+      padding: 30px;
+    }
+    h1 {
+      color: #00ffcc;
+      text-align: center;
+      font-size: 40px;
+      margin-bottom: 40px;
+    }
+    .card {
+      background: linear-gradient(145deg, #1a1a1a, #0f0f0f);
+      border-radius: 15px;
+      box-shadow: 0 0 15px rgba(0, 255, 204, 0.2);
+      margin-bottom: 30px;
+      padding: 25px;
+      border: 1px solid #222;
+    }
+    .card h2 {
+      color: #00ffaa;
+      font-size: 28px;
+      margin-bottom: 15px;
+    }
+    table {
+      width: 100%;
+      border-collapse: collapse;
+    }
+    th, td {
+      padding: 12px;
+      text-align: left;
+    }
+    th {
+      background-color: #111;
+      color: #00ffcc;
+      border-bottom: 2px solid #00ffaa;
+    }
+    tr:nth-child(even) {
+      background-color: #1a1a1a;
+    }
+    tr:hover {
+      background-color: #2a2a2a;
+    }
+    input[type="checkbox"] {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+    }
+    .nav {
+      text-align: center;
+      margin-top: 40px;
+    }
+    .button {
+      padding: 10px 20px;
+      border: none;
+      border-radius: 10px;
+      background-color: #00ffcc;
+      color: #0d0d0d;
+      font-size: 18px;
+      cursor: pointer;
+      transition: background-color 0.3s;
+    }
+    .button:hover {
+      background-color: #00ccaa;
+    }
+    #saveMessage {
+      color: #00ffaa;
+      margin-top: 20px;
+      text-align: center;
+    }
+  </style>
+</head>
+<body>
+  <h1>🎯 Liquidity Sniper Setup Checklist</h1>
+  <div id="checklist"></div>
+  <div class="nav">
+    <button class="button" onclick="saveChecklist()">Save Checklist</button>
+    <div id="saveMessage"></div>
+  </div>
+
+  <script>
+    const checklistData = [
+      {
+        category: "HTF Liquidity Zones (3H–4H)",
+        items: [
+          "Mark swing highs & lows",
+          "Mark equal highs/lows (EQH/EQL)",
+          "Note trendline breaks",
+          "Highlight liquidity pools above/below",
+        ],
+      },
+      {
+        category: "Entry Logic (30M–1H)",
+        items: [
+          "Wait for liquidity sweep in HTF zone",
+          "Confirm with clean displacement",
+          "Entry at OB after mitigation",
+          "SL above the entry candle",
+        ],
+      },
+      {
+        category: "Take Profit Logic (15M–5M)",
+        items: [
+          "Drop to LTF (15M–5M)",
+          "Target next visible liquidity pool",
+          "Adjust risk if volatility increases",
+        ],
+      },
+      {
+        category: "Final Confirmations",
+        items: [
+          "Does it follow LPR logic?",
+          "Is the entry candle clean and valid?",
+          "Journal the setup after entry",
+        ],
+      },
+    ];
+
+    function buildChecklist() {
+      const container = document.getElementById("checklist");
+      container.innerHTML = "";
+      checklistData.forEach((section, sectionIndex) => {
+        const card = document.createElement("div");
+        card.className = "card";
+
+        const title = document.createElement("h2");
+        title.textContent = section.category;
+        card.appendChild(title);
+
+        const table = document.createElement("table");
+        const thead = document.createElement("thead");
+        thead.innerHTML = `<tr><th>Step</th><th>Done</th></tr>`;
+        table.appendChild(thead);
+
+        const tbody = document.createElement("tbody");
+        section.items.forEach((item, itemIndex) => {
+          const row = document.createElement("tr");
+          const labelCell = document.createElement("td");
+          labelCell.textContent = item;
+          const checkCell = document.createElement("td");
+          checkCell.style.textAlign = "center";
+
+          const checkbox = document.createElement("input");
+          checkbox.type = "checkbox";
+          checkbox.id = `checkbox-${sectionIndex}-${itemIndex}`;
+
+          checkCell.appendChild(checkbox);
+          row.appendChild(labelCell);
+          row.appendChild(checkCell);
+          tbody.appendChild(row);
+        });
+
+        table.appendChild(tbody);
+        card.appendChild(table);
+        container.appendChild(card);
+      });
+    }
+
+    function saveChecklist() {
+      const checkboxes = document.querySelectorAll("input[type=checkbox]");
+      const states = [];
+      checkboxes.forEach(checkbox => states.push(checkbox.checked));
+      localStorage.setItem("sniperChecklist", JSON.stringify(states));
+      document.getElementById("saveMessage").textContent = "Checklist saved ✅";
+    }
+
+    function loadChecklist() {
+      const saved = JSON.parse(localStorage.getItem("sniperChecklist"));
+      if (!saved) return;
+      const checkboxes = document.querySelectorAll("input[type=checkbox]");
+      checkboxes.forEach((checkbox, index) => checkbox.checked = saved[index]);
+    }
+
+    buildChecklist();
+    window.onload = loadChecklist;
+  </script>
+</body>
+</html>
